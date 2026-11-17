@@ -5,6 +5,7 @@
 #include "hid.h"
 
 #include <setupapi.h>
+#include <hidclass.h>
 
 #include <algorithm>
 #include <cstdio>
@@ -167,6 +168,25 @@ bool HidDev::GetInputReport(BYTE reportId, std::vector<BYTE>& out) {
     out.assign(c_.inLen(), 0);
     out[0] = reportId;
     return HidD_GetInputReport(h_, out.data(), (ULONG)out.size()) != FALSE;
+}
+
+bool HidDev::GetFeatureByte(BYTE reportId, BYTE& value) {
+    if (!ok() || !overlapped_ || !reportId || c_.featLen() < 2) return false;
+    BYTE report[] = {reportId, 0xff};
+    OVERLAPPED ov{};
+    ov.hEvent = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    if (!ov.hEvent) return false;
+    DWORD received = 0;
+    BOOL done = DeviceIoControl(h_, IOCTL_HID_GET_FEATURE, report, sizeof(report),
+                                report, sizeof(report), &received, &ov);
+    if (!done && GetLastError() == ERROR_IO_PENDING) {
+        if (WaitForSingleObject(ov.hEvent, 200) != WAIT_OBJECT_0) CancelIoEx(h_, &ov);
+        done = GetOverlappedResult(h_, &ov, &received, TRUE);
+    }
+    CloseHandle(ov.hEvent);
+    if (!done || received != sizeof(report) || report[0] != reportId) return false;
+    value = report[1];
+    return true;
 }
 
 // ---- helpers ----------------------------------------------------------------------------------

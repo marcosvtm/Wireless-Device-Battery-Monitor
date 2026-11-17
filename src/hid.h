@@ -71,6 +71,7 @@ public:
 
     bool SetFeature(const std::vector<BYTE>& data);
     bool GetFeature(BYTE reportId, std::vector<BYTE>& out);  // out[0] = report ID
+    bool GetFeatureByte(BYTE reportId, BYTE& value);  // numbered 2-byte report on a read handle
     bool GetInputReport(BYTE reportId, std::vector<BYTE>& out);  // current input report via the control pipe; out[0] = report ID
 
 private:

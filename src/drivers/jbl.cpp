@@ -49,9 +49,34 @@ bool GetBattery(HidDev& d, BYTE& info) {
     return false;
 }
 
+// QuantumENGINE 2.9.4: Q350TV1 (206B) uses BatteryLevelProp (GET 49, event 08)
+// and HIDV1WirelessConnectionStateProp (GET 68). Both replies have one payload byte.
+// The observed Windows collections are also documented in upstream issue #259.
+void PollQuantum350(PollContext& ctx) {
+    constexpr USHORT pid = 0x206B;
+    if (ctx.IsClaimed(kVid, pid)) return;
+    for (const auto* c : ctx.Find(kVid, pid, [](const HidColl& c) {
+             return c.iface == 3 && c.page() == 1 && c.usage() == 0 && c.featLen() >= 2;
+         })) {
+        HidDev d;
+        BYTE linked = 0, percent = 0;
+        if (!d.OpenReadOnly(*c) || !d.GetFeatureByte(0x68, linked) || linked != 1 ||
+            !d.GetFeatureByte(0x49, percent) || percent > 100) continue;
+        DeviceStatus s;
+        s.key = L"jbl:" + Hex4(pid);
+        s.name = L"JBL Quantum 350 Wireless";
+        s.kind = DeviceKind::Headset;
+        s.via = L"2.4 GHz receiver";
+        s.percent = percent;
+        ctx.Add(s, kVid, pid);
+        break;
+    }
+}
+
 }  // namespace
 
 void PollJbl(PollContext& ctx) {
+    PollQuantum350(ctx);
     for (const Model& m : kModels) {
         if (ctx.IsClaimed(kVid, m.pid)) continue;
         for (const HidColl* c : ctx.Find(kVid, m.pid, [](const HidColl& c) {

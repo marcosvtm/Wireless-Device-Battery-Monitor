@@ -289,6 +289,15 @@ bool HidDev::GetFeature(BYTE reportId, std::vector<BYTE>& out) {
     return ioctl(fd_, HIDIOCGFEATURE(out.size()), out.data()) >= 0;
 }
 
+bool HidDev::GetFeatureByte(BYTE reportId, BYTE& value) {
+    if (!ok() || !reportId || c_.featLen() < 2) return false;
+    BYTE report[] = {reportId, 0xff};
+    if (ioctl(fd_, HIDIOCGFEATURE(sizeof(report)), report) != sizeof(report) || report[0] != reportId)
+        return false;
+    value = report[1];
+    return true;
+}
+
 // ---- helpers (same behaviour as the Windows backend) ------------------------------------------
 
 std::wstring HidProduct(const HidColl& c) { return c.product; }
