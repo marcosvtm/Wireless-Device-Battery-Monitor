@@ -1,0 +1,14 @@
+#pragma code_page(65001)
+#include <windows.h>
+#include "dialog.h"
+DIALOG_TEST DIALOGEX 0, 0, 262, 120
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Teste 2 do JBL Quantum 350"
+FONT 10, "Segoe UI"
+BEGIN
+    LTEXT "Ligue o fone, conecte o receptor USB ao PC e deixe o cabo de carga fora do fone. Abra o JBL QuantumENGINE.", INSTRUCTIONS, 10, 9, 242, 32
+    LTEXT "Bateria no QuantumENGINE (%)", PERCENT_LABEL, 10, 46, 142, 14
+    EDITTEXT PERCENTAGE, 156, 43, 38, 16, ES_NUMBER | ES_AUTOHSCROLL
+    LTEXT "O teste leva até 1 minuto.", STATUS_LINE, 10, 67, 242, 23
+    DEFPUSHBUTTON "Começar", ACTION, 155, 94, 97, 18
+END
