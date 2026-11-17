@@ -43,10 +43,10 @@ std::vector<HidColl> EnumHid() {
 
 // ---- HidDev -----------------------------------------------------------------------------------
 
-bool HidDev::Open(const HidColl& c) {
+bool HidDev::Open(const HidColl& c, DWORD access) {
     Close();
     c_ = c;
-    h_ = CreateFileW(c.path.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
+    h_ = CreateFileW(c.path.c_str(), access, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING,
                      FILE_FLAG_OVERLAPPED, nullptr);
     overlapped_ = true;
     return ok();

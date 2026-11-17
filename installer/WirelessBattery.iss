@@ -9,12 +9,12 @@
 #define Root ".."
 
 [Setup]
-AppId={{7E0B5C2A-3F4D-4C8E-9B61-2D5A8F1C4E93}
-AppName=Wireless Battery
+AppId={{C4EEA498-5EB1-49C5-A5EE-CECAC8B13AAA}
+AppName=Wireless Battery Quantum 350 Test
 AppVersion={#AppVersion}
 AppVerName=Wireless Battery {#AppVersion}
 AppPublisher=Wireless Battery contributors
-DefaultDirName={autopf}\Wireless Battery
+DefaultDirName={autopf}\Wireless Battery Quantum 350 Test
 DisableProgramGroupPage=yes
 DisableDirPage=auto
 PrivilegesRequired=lowest
@@ -33,7 +33,7 @@ WizardStyle=modern
 CloseApplications=no
 
 [Tasks]
-Name: "autostart"; Description: "Start Wireless Battery when I sign in to Windows"
+Name: "autostart"; Description: "Start Wireless Battery when I sign in to Windows"; Flags: unchecked
 
 [Files]
 Source: "{#Root}\WirelessBattery.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -42,7 +42,8 @@ Source: "{#Root}\LICENSE"; DestDir: "{app}"; DestName: "LICENSE.txt"; Flags: ign
 Source: "{#Root}\installer\THIRD_PARTY_NOTICES.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{autoprograms}\Wireless Battery"; Filename: "{app}\WirelessBattery.exe"
+Name: "{autoprograms}\Record JBL Quantum 350 test"; Filename: "{app}\WirelessBattery.exe"; Parameters: "--quantum350-test"
+Name: "{autoprograms}\Wireless Battery Quantum 350 Test"; Filename: "{app}\WirelessBattery.exe"
 
 [Run]
 Filename: "{app}\WirelessBattery.exe"; Description: "Start Wireless Battery now"; Flags: nowait postinstall skipifsilent

@@ -37,7 +37,7 @@ public:
     HidDev(const HidDev&) = delete;
     HidDev& operator=(const HidDev&) = delete;
 
-    bool Open(const HidColl& c);            // read/write, overlapped
+    bool Open(const HidColl& c, DWORD access = GENERIC_READ | GENERIC_WRITE);            // read/write, overlapped
     bool OpenFeatureOnly(const HidColl& c);  // zero access: enough for feature reports, works on mice/keyboards
     void Close();
     bool ok() const { return h_ != INVALID_HANDLE_VALUE; }
